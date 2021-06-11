@@ -7,6 +7,7 @@ package javaapplication44;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -109,10 +110,19 @@ public class frmLogin extends javax.swing.JFrame {
         try {
             Connection miConexion = DriverManager.getConnection(url, user, pass);
             Statement stmt = miConexion.createStatement();
-            String sql = "select * from users where name ='"
-                    + txtUsuario.getText() + "' and password ='" + txtContra.getText() + "'";
+//Consulta contruida sin seguridad
+//            String sql = "select * from users where name ='"
+//                    + txtUsuario.getText() + "' and password ='" + txtContra.getText() + "'";
+            String sql = "select * from users where name =? and password =?";
+            
             System.out.println(sql);
-            ResultSet rs = stmt.executeQuery(sql);
+//Ejecución de consulta sin seguridad            
+//ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement pstmt = miConexion.prepareStatement(sql);
+            pstmt.setString(1, txtUsuario.getText());
+            pstmt.setString(2, txtContra.getText());
+            System.out.println(pstmt);
+            ResultSet rs =pstmt.executeQuery();
             if (rs.next()) {
                 System.out.println("Bienvenido al sistema");
             }else{
